@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captured Images</title>
+</head>
+<body>
+    <h1>Captured Images</h1>
+    {% if images %}
+        {% for image in images %}
+            <img src="{{ image }}" alt="Captured Image" width="200">
+        {% endfor %}
+    {% else %}
+        <p>No images found.</p>
+    {% endif %}
+</body>
+</html>
