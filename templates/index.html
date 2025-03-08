@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Selfie Capture</title>
+</head>
+<body>
+    <h2>AI-Based Selfie Capture</h2>
+    <video id="video" width="320" height="240" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <button id="capture">Capture</button>
+    <button id="save">Save to Folder</button>
+    <img id="photo" src="" alt="Captured Image" style="display: none;">
+
+    <script>
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let photo = document.getElementById('photo');
+        let captureButton = document.getElementById('capture');
+        let saveButton = document.getElementById('save');
+
+        // Open Webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => console.log("Error: " + err));
+
+        // Capture Photo
+        captureButton.addEventListener('click', function() {
+            let context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let data = canvas.toDataURL('image/png');
+            photo.src = data;
+            photo.style.display = 'block';
+        });
+
+        // Save Image to Folder
+        saveButton.addEventListener('click', function() {
+            let imageData = photo.src;
+            fetch("/save_image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: imageData })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.log("Error:", error));
+        });
+    </script>
+</body>
+</html>
