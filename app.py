@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
-# Create "uploads" folder if not exists
+# Define the upload folder
 UPLOAD_FOLDER = "static/uploads/"
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -41,6 +41,17 @@ def save_image():
     cv2.imwrite(image_path, img)
 
     return jsonify({"message": "Image Saved Successfully!", "image": image_name})
+
+@app.route('/gallery')
+def gallery():
+    # Check if the uploads folder exists
+    if not os.path.exists(UPLOAD_FOLDER):
+        return "Uploads folder not found!", 404
+
+    # List all images in the uploads folder
+    images = os.listdir(UPLOAD_FOLDER)
+    
+    return render_template("gallery.html", images=images)
 
 if __name__ == '__main__':
     app.run(debug=True)
